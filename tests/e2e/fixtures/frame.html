@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Frame</title></head>
+<body>
+  <input id="frame-input" name="frame_input" placeholder="In frame">
+  <button id="frame-button">Frame button</button>
+  <div id="frame-result"></div>
+  <script>
+    document.querySelector('#frame-button').onclick = () => {
+      document.querySelector('#frame-result').textContent = `frame got ${document.querySelector('#frame-input').value}`;
+    };
+  </script>
+</body>
+</html>

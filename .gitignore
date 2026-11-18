@@ -1,0 +1,7 @@
+node_modules/
+dist/
+artifacts/
+tests/e2e/.build/
+tests/e2e/.screenshots/
+tests/e2e/*.log
+.vs/

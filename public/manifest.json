@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "Déjà Vu",
+  "version": "0.1.0",
+  "description": "Record browser interactions once, then edit and replay them from the sidebar. Everything stays on your machine.",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "deja-vu@recorder.local",
+      "strict_min_version": "128.0",
+      "data_collection_permissions": { "required": ["none"] }
+    }
+  },
+  "icons": {
+    "48": "icons/icon.svg",
+    "96": "icons/icon.svg"
+  },
+  "action": {
+    "default_title": "Toggle Déjà Vu",
+    "default_icon": "icons/icon.svg"
+  },
+  "sidebar_action": {
+    "default_title": "Déjà Vu",
+    "default_panel": "sidebar/index.html",
+    "default_icon": "icons/icon.svg",
+    "open_at_install": false
+  },
+  "background": {
+    "scripts": ["background/index.js"]
+  },
+  "permissions": ["cookies", "scripting", "storage", "tabs", "webNavigation"],
+  "optional_host_permissions": ["*://*/*", "file:///*"],
+  "commands": {
+    "_execute_sidebar_action": {
+      "suggested_key": { "default": "Alt+Shift+D" },
+      "description": "Toggle the Déjà Vu sidebar"
+    }
+  }
+}

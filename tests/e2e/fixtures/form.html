@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Fixture form</title>
+  <style>
+    body { font: 14px system-ui; margin: 20px; max-width: 760px; }
+    section { border: 1px solid #ccc; padding: 10px; margin: 10px 0; }
+    label { display: block; margin: 6px 0; }
+    #banner { position: fixed; left: 0; right: 0; bottom: 0; background: #223; color: #fff; padding: 10px; }
+    .box { display: inline-block; width: 120px; height: 60px; background: #eef; border: 1px solid #99c; padding: 4px; }
+    #slider-handle { width: 40px; height: 40px; background: #c99; position: relative; }
+    #overlay { position: fixed; inset: 0; background: rgba(0,0,0,.3); display: none; }
+    #tall { height: 2000px; }
+  </style>
+</head>
+<body>
+  <h1 id="title">Create customer</h1>
+
+  <section id="form-section">
+    <form id="customer-form" action="/next.html" method="get">
+      <label>Name <input id="name" name="customer_name" data-testid="name-input" autocomplete="off"></label>
+      <label>Email <input id="email" name="email" type="email" placeholder="you@example.test"></label>
+      <label>Password <input id="password" name="secret_field" type="password"></label>
+      <label>Notes <textarea id="notes" name="notes"></textarea></label>
+      <label>Plan
+        <select id="plan" name="plan">
+          <option value="">Choose</option>
+          <option value="free">Free</option>
+          <option value="pro">Professional</option>
+        </select>
+      </label>
+      <label><input id="agree" type="checkbox" name="agree"> I agree</label>
+      <label><input type="radio" name="contact" value="mail" id="contact-mail"> Mail</label>
+      <label><input type="radio" name="contact" value="phone" id="contact-phone"> Phone</label>
+      <label>Starts <input id="date" name="date" type="date"></label>
+      <label>Seats <input id="seats" name="seats" type="range" min="0" max="10" value="1"></label>
+      <div id="blur-state">untouched</div>
+      <button id="submit" type="submit" data-testid="submit">Save customer</button>
+    </form>
+  </section>
+
+  <section id="dynamic">
+    <button id="load-later">Load later</button>
+    <div id="later-slot"></div>
+    <button id="disabled-then-enabled" disabled>Not ready</button>
+    <button id="enable-it">Enable it</button>
+    <div id="click-result"></div>
+    <button id="spinner-button">Show overlay</button>
+  </section>
+
+  <section id="dialogs">
+    <button id="confirm-button">Delete with confirm</button>
+    <button id="prompt-button">Rename with prompt</button>
+    <div id="dialog-result"></div>
+    <button id="open-dialog">Open dialog</button>
+    <dialog id="native-dialog"><p>Hello</p><button id="close-dialog">Close</button></dialog>
+  </section>
+
+  <section id="shadow">
+    <open-widget id="open-host"></open-widget>
+    <closed-widget id="closed-host"></closed-widget>
+    <div id="shadow-result"></div>
+  </section>
+
+  <section id="frames">
+    <iframe id="same-frame" src="/frame.html" width="300" height="80"></iframe>
+    <iframe id="cross-frame" width="300" height="80"></iframe>
+  </section>
+
+  <section id="dnd">
+    <div class="box" id="drag-source" draggable="true">Drag me</div>
+    <div class="box" id="drop-target">Drop here</div>
+    <div id="drop-result"></div>
+    <div id="slider-track" style="width:300px;height:40px;background:#eee"><div id="slider-handle"></div></div>
+    <div id="slider-result"></div>
+  </section>
+
+  <section id="spa">
+    <a id="spa-link" href="/spa/details">SPA details</a>
+    <a id="hash-link" href="#section-two">Hash link</a>
+    <a id="other-origin">Other site</a>
+    <div id="route"></div>
+  </section>
+
+  <section id="keys">
+    <button id="key-target">Focus for keys</button>
+    <div id="key-result"></div>
+    <div id="dblclick-target" class="box">Double-click</div>
+    <div id="dblclick-result"></div>
+    <div id="context-target" class="box">Right-click</div>
+    <div id="context-result"></div>
+  </section>
+
+  <div id="overlay"></div>
+  <div id="tall"></div>
+  <div id="bottom-marker">Bottom</div>
+
+  <script>
+    const $ = (selector) => document.querySelector(selector);
+    const params = new URLSearchParams(location.search);
+
+    if (params.get('banner') === '1') {
+      const banner = document.createElement('div');
+      banner.id = 'banner';
+      banner.innerHTML = 'We use cookies <button id="accept-cookies">Accept</button>';
+      document.body.append(banner);
+      $('#accept-cookies').onclick = () => banner.remove();
+    }
+    // Lets a test simulate a release that renamed things.
+    if (params.get('variant') === 'renamed') {
+      $('#submit').removeAttribute('data-testid');
+      $('#submit').id = 'save-btn-v2';
+      $('#name').removeAttribute('data-testid');
+      $('#name').id = 'customer-name-v2';
+    }
+    if (params.get('variant') === 'gone') {
+      $('#submit').remove();
+    }
+
+    $('#email').addEventListener('blur', (event) => {
+      $('#blur-state').textContent = event.target.value.includes('@') ? 'valid' : 'invalid';
+    });
+
+    $('#load-later').onclick = () => {
+      setTimeout(() => {
+        const button = document.createElement('button');
+        button.id = 'late-button';
+        button.textContent = 'I arrived late';
+        button.onclick = () => ($('#click-result').textContent = 'late clicked');
+        $('#later-slot').append(button);
+      }, 800);
+    };
+    $('#enable-it').onclick = () => {
+      setTimeout(() => {
+        const button = $('#disabled-then-enabled');
+        button.disabled = false;
+        button.textContent = 'Ready';
+        button.onclick = () => ($('#click-result').textContent = 'enabled clicked');
+      }, 600);
+    };
+    $('#spinner-button').onclick = () => {
+      $('#overlay').style.display = 'block';
+      setTimeout(() => ($('#overlay').style.display = 'none'), 700);
+    };
+
+    $('#confirm-button').onclick = () => {
+      $('#dialog-result').textContent = confirm('Really delete?') ? 'confirmed' : 'declined';
+    };
+    $('#prompt-button').onclick = () => {
+      $('#dialog-result').textContent = `renamed to ${prompt('New name?', 'x')}`;
+    };
+    $('#open-dialog').onclick = () => $('#native-dialog').showModal();
+    $('#close-dialog').onclick = () => $('#native-dialog').close();
+
+    class OpenWidget extends HTMLElement {
+      connectedCallback() {
+        const root = this.attachShadow({ mode: 'open' });
+        root.innerHTML = '<button id="open-inner" data-testid="open-inner">Inside open</button>';
+        root.querySelector('button').onclick = () => ($('#shadow-result').textContent = 'open clicked');
+      }
+    }
+    class ClosedWidget extends HTMLElement {
+      connectedCallback() {
+        const root = this.attachShadow({ mode: 'closed' });
+        root.innerHTML = '<button id="closed-inner">Inside closed</button>';
+        root.querySelector('button').onclick = () => ($('#shadow-result').textContent = 'closed clicked');
+      }
+    }
+    customElements.define('open-widget', OpenWidget);
+    customElements.define('closed-widget', ClosedWidget);
+
+    $('#cross-frame').src = `http://127.0.0.1:${location.port}/frame.html?cross=1`;
+    $('#other-origin').href = `http://127.0.0.1:${location.port}/next.html`;
+
+    $('#drag-source').addEventListener('dragstart', (event) => event.dataTransfer.setData('text/plain', 'payload'));
+    $('#drop-target').addEventListener('dragover', (event) => event.preventDefault());
+    $('#drop-target').addEventListener('drop', (event) => {
+      event.preventDefault();
+      $('#drop-result').textContent = `dropped ${event.dataTransfer.getData('text/plain')}`;
+    });
+
+    let dragging = false;
+    $('#slider-handle').addEventListener('mousedown', () => (dragging = true));
+    window.addEventListener('mousemove', (event) => {
+      if (!dragging) return;
+      const rect = $('#slider-track').getBoundingClientRect();
+      $('#slider-handle').style.left = `${Math.max(0, event.clientX - rect.left - 20)}px`;
+    });
+    window.addEventListener('mouseup', (event) => {
+      if (!dragging) return;
+      dragging = false;
+      $('#slider-result').textContent = `moved ${parseInt($('#slider-handle').style.left || '0', 10) > 50 ? 'far' : 'near'}`;
+    });
+
+    $('#spa-link').addEventListener('click', (event) => {
+      event.preventDefault();
+      history.pushState({}, '', '/spa/details');
+      $('#route').textContent = 'details route';
+    });
+
+    $('#key-target').addEventListener('keydown', (event) => {
+      if (event.key === 'k' && event.ctrlKey) {
+        event.preventDefault();
+        $('#key-result').textContent = 'shortcut fired';
+      }
+      if (event.key === 'ArrowDown') $('#key-result').textContent = 'arrow fired';
+    });
+    $('#dblclick-target').addEventListener('dblclick', () => ($('#dblclick-result').textContent = 'double'));
+    $('#context-target').addEventListener('contextmenu', (event) => {
+      event.preventDefault();
+      $('#context-result').textContent = 'context';
+    });
+  </script>
+</body>
+</html>

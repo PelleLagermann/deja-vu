@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Cookies</title>
+</head>
+<body>
+  <h1>Cookies this page can see</h1>
+  <!-- ?clear removes every cookie, ?set=name=value adds one. The list is sorted, one per line. -->
+  <pre id="cookies"></pre>
+  <script>
+    const params = new URLSearchParams(location.search);
+    if (params.has('clear')) {
+      for (const part of document.cookie.split(';')) {
+        const name = part.split('=')[0].trim();
+        if (name) document.cookie = `${name}=; max-age=0; path=/`;
+      }
+    }
+    for (const pair of params.getAll('set')) document.cookie = `${pair}; path=/`;
+    document.getElementById('cookies').textContent = document.cookie.split('; ').filter(Boolean).sort().join('\n') || '(none)';
+  </script>
+</body>
+</html>

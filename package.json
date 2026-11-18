@@ -1,0 +1,38 @@
+{
+  "name": "deja-vu",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Record, edit and replay browser interactions from a Firefox sidebar.",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/build.mjs --watch",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "node scripts/build.mjs && vitest run --config vitest.e2e.config.ts",
+    "lint:ext": "web-ext lint --source-dir dist",
+    "start:firefox": "web-ext run --source-dir dist",
+    "package": "node scripts/build.mjs && web-ext build --source-dir dist --artifacts-dir artifacts --overwrite-dest"
+  },
+  "dependencies": {
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@types/firefox-webext-browser": "^143.0.1",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@types/selenium-webdriver": "^4.1.0",
+    "@vitejs/plugin-react": "^6.2.1",
+    "fake-indexeddb": "^6.2.7",
+    "geckodriver": "^8.0.0",
+    "jsdom": "^31.0.0",
+    "selenium-webdriver": "^4.52.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.6",
+    "vitest": "^5.1.0",
+    "web-ext": "^10.8.0"
+  }
+}
