@@ -72,7 +72,7 @@ it('captures the sidebar', async () => {
   await browser.toPage();
   await browser.inChrome(`
     const win = Services.wm.getMostRecentBrowserWindow();
-    return win.SidebarController.show('deja-vu_recorder_local-sidebar-action');
+    return win.SidebarController.show('deja-vu_lagermann-sidebar-action');
   `);
   await shot('sidebar-list');
 

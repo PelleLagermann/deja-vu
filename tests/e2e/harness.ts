@@ -13,7 +13,7 @@ const ROOT = resolve(import.meta.dirname, '../..');
 const FIXTURES = join(ROOT, 'tests/e2e/fixtures');
 export const FIXTURE_BUILD = join(ROOT, 'tests/e2e/.build');
 
-const ADDON_ID = 'deja-vu@recorder.local';
+const ADDON_ID = 'deja-vu@lagermann';
 /** Fixed so that the sidebar's address is known, and stable across restarts. */
 const ADDON_UUID = '7c6f2a10-5c4e-4e0a-9a61-0d3f1f2b8e11';
 export const SIDEBAR_URL = `moz-extension://${ADDON_UUID}/sidebar/index.html`;

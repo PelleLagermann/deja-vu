@@ -25,7 +25,7 @@ function scriptBuild(name, entry) {
       emptyOutDir: true,
       minify: false,
       sourcemap: watch ? 'inline' : false,
-      target: 'firefox128',
+      target: 'firefox142',
       watch: watch ? {} : null,
       lib: {
         entry: resolve(root, entry),
@@ -45,7 +45,7 @@ const sidebar = {
   build: {
     outDir: resolve(dist, 'sidebar'),
     emptyOutDir: true,
-    target: 'firefox128',
+    target: 'firefox142',
     // Extension pages can't load inline data URLs for scripts, and nothing here is large.
     assetsInlineLimit: 0,
     modulePreload: false,

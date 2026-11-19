@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "description": "Record, edit and replay browser interactions from a Firefox sidebar.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
   "type": "module",
   "scripts": {
     "build": "node scripts/build.mjs",
@@ -13,7 +17,8 @@
     "test:e2e": "node scripts/build.mjs && vitest run --config vitest.e2e.config.ts",
     "lint:ext": "web-ext lint --source-dir dist",
     "start:firefox": "web-ext run --source-dir dist",
-    "package": "node scripts/build.mjs && web-ext build --source-dir dist --artifacts-dir artifacts --overwrite-dest"
+    "package": "node scripts/build.mjs && web-ext build --source-dir dist --artifacts-dir artifacts --overwrite-dest",
+    "package:source": "node scripts/package-source.mjs"
   },
   "dependencies": {
     "react": "^19.3.1",

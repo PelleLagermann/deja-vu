@@ -16,40 +16,61 @@ just the part you need, with debugger-style controls, from the Firefox sidebar.
 
 ## Requirements
 
-- Firefox 128 or newer. Tested on Firefox Developer Edition 160. 128 is the oldest version with the
-  APIs it uses, but hasn't been tested.
+- Firefox 142 or newer. Tested on Firefox Developer Edition 160. 142 is the oldest version that
+  supports everything in its manifest, but hasn't been tested.
 - Node.js 22 or newer, to build
 
-## Getting started
+## Installation
 
-### 1. Install dependencies
+First install the dependencies:
 
 ```bash
 npm install
 ```
 
-### 2. Build the extension
+Then choose how to install the extension. A permanent installation keeps the extension and your
+recordings when Firefox restarts. A temporary installation is quicker to set up, but is removed when
+Firefox closes, and your recordings with it.
 
-```bash
-npm run build
-```
+### Permanent installation
 
-The extension is written to `dist/`.
+Requires Firefox Developer Edition or Nightly, which can install unsigned extensions.
 
-### 3. Load it in Firefox
+1. Build and package the extension:
 
-1. Open `about:debugging#/runtime/this-firefox`.
-2. Choose **Load Temporary Add-on**.
-3. Select `dist/manifest.json`.
+   ```bash
+   npm run package
+   ```
 
-Temporary add-ons are removed when Firefox closes, and their recordings with them. To keep your
-recordings between sessions, export them, or install the extension permanently: run `npm run package`,
-set `xpinstall.signatures.required` to `false` in `about:config` (Developer Edition and Nightly
-only), and open the `.zip` from `artifacts/` through **Install Add-on From File** in `about:addons`.
+   The package is written to `artifacts/` as a `.zip`.
+2. Open `about:config`, and set `xpinstall.signatures.required` to `false`.
+3. Open `about:addons`, choose the gear menu, then **Install Add-on From File**.
+4. Select the `.zip` from `artifacts/`.
+
+To update the extension later, repeat steps 1, 3 and 4. Your recordings are kept.
+
+### Temporary installation
+
+Works in every Firefox edition, and suits trying the extension out or developing it.
+
+1. Build the extension:
+
+   ```bash
+   npm run build
+   ```
+
+   The extension is written to `dist/`.
+2. Open `about:debugging#/runtime/this-firefox`.
+3. Choose **Load Temporary Add-on**.
+4. Select `dist/manifest.json`.
+
+To keep recordings made with a temporary installation, export them before you close Firefox.
+
+## Getting started
 
 Open the sidebar with the toolbar button or **Alt+Shift+D**.
 
-### 4. Start a recording
+### 1. Start a recording
 
 1. Open the page you want to automate.
 2. Press **Record** in the sidebar. The first time on a site, Firefox asks you to allow access.
@@ -60,7 +81,7 @@ Open the sidebar with the toolbar button or **Alt+Shift+D**.
 While recording, **Add step** inserts checks as you go. For example, choose **Assertion**, then
 **Pick element**, and click something in the page.
 
-### 5. Save and edit recordings
+### 2. Save and edit recordings
 
 Recordings save automatically, as does every edit. Open one from the **Recordings** tab.
 
@@ -75,7 +96,7 @@ Recordings save automatically, as does every edit. Open one from the **Recording
 | Check a selector | **Test** runs it against the current page. **Highlight** shows the element. |
 | Add more steps | Open a step, then press **Record**. New steps go after it. |
 
-### 6. Replay recordings
+### 3. Replay recordings
 
 Press **Play**. The controls are:
 
@@ -95,7 +116,7 @@ If a required step fails, playback stops and shows what it tried and why. Fix th
 it's stopped, then press **Retry**, or use **Skip step** to move on. The **Log** tab holds a timed
 record of each run, and clicking an entry takes you to that step.
 
-### 7. Import and export
+### 4. Import and export
 
 - **One recording:** **Export** in the recording's menu. Bring it back with **Import from file** in the menu next to Record.
 - **A collection:** open it and choose **Export collection**. **Import** on the Collections tab
@@ -216,6 +237,25 @@ npm run lint:ext
 
 Runs Mozilla's `web-ext lint`. Its `innerHTML` warnings come from inside React DOM.
 
+## Publishing to addons.mozilla.org
+
+Every upload needs a higher `version` in `public/manifest.json` than the last one. Commit, then:
+
+```bash
+npm run package
+```
+
+```bash
+npm run package:source
+```
+
+The first builds the extension to upload. The second zips the committed source, because AMO
+requires the source of generated code. Both go to `artifacts/`. When AMO asks whether the upload
+contains generated code, answer yes, upload the source zip, and paste the contents of
+[docs/AMO-REVIEW.md](docs/AMO-REVIEW.md) into the notes for reviewers.
+
+Choose **Firefox** (desktop) only. Sidebars aren't available in Firefox for Android.
+
 ## Project layout
 
 ```
@@ -238,3 +278,8 @@ tests/
 - [Architecture](docs/ARCHITECTURE.md): how it fits together, and which Firefox constraints shaped it
 - [Known limitations](docs/LIMITATIONS.md)
 - [Export format](docs/EXPORT-FORMAT.md)
+- [Notes for AMO reviewers](docs/AMO-REVIEW.md)
+
+## License
+
+[MIT](LICENSE)

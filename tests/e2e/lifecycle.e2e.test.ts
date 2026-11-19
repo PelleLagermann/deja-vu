@@ -113,7 +113,7 @@ describe('browser lifecycle', () => {
   const grantedOrigins = async (session: Browser) =>
     session.inChrome<string[]>(`
       const { WebExtensionPolicy } = Cu.getGlobalForObject(Services);
-      return WebExtensionPolicy.getByID('deja-vu@recorder.local').allowedOrigins.patterns.map((pattern) => pattern.pattern);
+      return WebExtensionPolicy.getByID('deja-vu@lagermann').allowedOrigins.patterns.map((pattern) => pattern.pattern);
     `);
 
   it('asks for access to just the current site when recording starts', async () => {
@@ -177,9 +177,9 @@ it('offers access when playback reaches a site it cannot reach', async () => {
     const session = await start();
     const opened = await session.inChrome<string>(`
       const win = Services.wm.getMostRecentBrowserWindow();
-      return win.SidebarController.show('deja-vu_recorder_local-sidebar-action').then(() => win.SidebarController.currentID);
+      return win.SidebarController.show('deja-vu_lagermann-sidebar-action').then(() => win.SidebarController.currentID);
     `);
-    expect(opened).toBe('deja-vu_recorder_local-sidebar-action');
+    expect(opened).toBe('deja-vu_lagermann-sidebar-action');
   });
 
   it('toggles the sidebar from the toolbar button', async () => {
@@ -188,20 +188,20 @@ it('offers access when playback reaches a site it cannot reach', async () => {
       session.inChrome<void>(`
         const win = Services.wm.getMostRecentBrowserWindow();
         const { CustomizableUI } = win;
-        const widget = CustomizableUI.getWidget('deja-vu_recorder_local-browser-action').forWindow(win);
+        const widget = CustomizableUI.getWidget('deja-vu_lagermann-browser-action').forWindow(win);
         const button = widget.node.querySelector('.unified-extensions-item-action-button') ?? widget.node;
         button.click();
       `);
     const isOpen = () =>
       session.inChrome<boolean>(`
         const { SidebarController } = Services.wm.getMostRecentBrowserWindow();
-        return SidebarController.isOpen && SidebarController.currentID === 'deja-vu_recorder_local-sidebar-action';
+        return SidebarController.isOpen && SidebarController.currentID === 'deja-vu_lagermann-sidebar-action';
       `);
 
     await session.toPage();
     await session.inChrome(`
       const win = Services.wm.getMostRecentBrowserWindow();
-      win.CustomizableUI.addWidgetToArea('deja-vu_recorder_local-browser-action', 'nav-bar');
+      win.CustomizableUI.addWidgetToArea('deja-vu_lagermann-browser-action', 'nav-bar');
     `);
     expect(await isOpen()).toBe(false);
     await clickToolbarButton();
